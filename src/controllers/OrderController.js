@@ -1,58 +1,77 @@
 const OrderService = require('../services/OrderService');
+
 const getAllOrders = async (req, res, next) => {
-    const orders = await OrderService.getAllOrders();
-    req.responseData = {
-        status: 200,
-        message: 'Successfully! Get all orders',
-        data: orders
-    };
-    next();
+    try {
+        const orders = await OrderService.getAllOrders();
+        res.json({
+            message: 'Successfully! Get all orders',
+            data: orders
+        });
+    } catch (error) {
+        next(error);
+    }
 }
+
 const createOrder = async (req, res, next) => {
-    const order = await OrderService.createOrder(req);
-    req.responseData = {
-        status: 201,
-        message: 'Successfully! Create order',
-        data: order
-    };
-    next();
+    try {
+        const order = await OrderService.createOrder(req);
+        res.status(201).json({
+            message: 'Successfully! Create order',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
 }
+
 const getDeliveringOrder = async (req, res, next) => {
-    const order = await OrderService.getDeliveringOrder(req);
-    req.responseData = {
-        status: 200,
-        message: 'Successfully! Get delivering order',
-        data: order
-    };
-    next();
+    try {
+        const order = await OrderService.getDeliveringOrder(req);
+        res.json({
+            message: 'Successfully! Get delivering order',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
 }
+
 const getOrderById = async (req, res, next) => {
-    const order = await OrderService.getOrderById(req.params.id);
-    req.responseData = {
-        status: 200,
-        message: 'Successfully! Get order by id',
-        data: order
-    };
-    next();
+    try {
+        const order = await OrderService.getOrderById(req.params.id);
+        res.json({
+            message: 'Successfully! Get order by id',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
 }
+
 const updateOrder = async (req, res, next) => {
-    const order = await OrderService.updateOrder(req.params.id, req.body);
-    req.responseData = {
-        status: 200,
-        message: 'Successfully! Update order',
-        data: order
-    };
-    next();
+    try {
+        const order = await OrderService.updateOrder(req.params.id, req.body);
+        res.json({
+            message: 'Successfully! Update order',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
 }
+
 const deleteOrder = async (req, res, next) => {
-    const order = await OrderService.deleteOrder(req.params.id);
-    req.responseData = {
-        status: 200,
-        message: 'Successfully! Delete order',
-        data: order
-    };
-    next();
+    try {
+        const order = await OrderService.deleteOrder(req.params.id);
+        res.json({
+            message: 'Successfully! Delete order',
+            data: order
+        });
+    } catch (error) {
+        next(error);
+    }
 }
+
 module.exports = {
     getAllOrders,
     createOrder,
