@@ -51,15 +51,9 @@ app.use("/",homeRoute)
 
 app.use(handleError)
 
-const start = async ()=>{
-    try {
-        await connectMongoDB(process.env.URL)
-        app.listen(port, () => {
-            console.log(`Example app listening on port ${port}`);
-        });
-    } catch (error) {
-        console.log(error)
-    }
-}
-start()
+connectMongoDB(process.env.URL)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+module.exports = app;
 
