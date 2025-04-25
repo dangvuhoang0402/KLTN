@@ -19,11 +19,10 @@ const handleResponse = (req, res, next) => {
             formattedResponse[key] === null && delete formattedResponse[key]
         );
 
-        // Pretty print in development
-        if (process.env.NODE_ENV === 'development') {
-            return oldJson.call(this, JSON.stringify(formattedResponse, null, 2));
-        }
-
+        // Set proper content type and spacing
+        res.setHeader('Content-Type', 'application/json');
+        
+        // Pretty print response
         return oldJson.call(this, formattedResponse);
     };
     next();
