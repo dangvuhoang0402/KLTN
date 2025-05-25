@@ -16,7 +16,8 @@ const createFood = async (foodData) => {
         Name: foodData.Name,
         Price: foodData.Price,
         Image_url: foodData.image, // This comes from Cloudinary upload
-        Quantity: foodData.Quantity
+        Quantity: foodData.Quantity,
+        Type: foodData.Type
     };
 
     const food = await FoodRepo.createFood(newFood);
