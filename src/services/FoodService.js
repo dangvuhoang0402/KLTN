@@ -41,7 +41,8 @@ const updateFood = async (id, foodData) => {
         Name: foodData.Name || existingFood.Name,
         Price: foodData.Price || existingFood.Price,
         Quantity: foodData.Quantity || existingFood.Quantity,
-        Image_url: foodData.image || existingFood.Image // Use new image if provided, otherwise keep existing
+        Image_url: foodData.image || existingFood.Image, // Use new image if provided, otherwise keep existing
+        Type: foodData.Type || existingFood.Type
     };
 
     const food = await FoodRepo.updateFood(id, updateData);

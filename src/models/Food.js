@@ -19,6 +19,11 @@ const FoodSchema = new mongoose.Schema(
         type: Number,
         required: true,
         },
+        Type: {
+        type: Number,
+        required: true,
+        enum: [0, 1], // 0: Food, 1: Drink
+        }
     },
     { timestamps: true }
     );
