@@ -38,11 +38,20 @@ const deleteOrder = async (id) => {
     return order;
 }
 
+const getOrderByUID = async (id) => {
+    const order = await Order.findOne({ UID: id }).populate('items.FoodId');
+    if (!order) {
+        return null;
+    }
+    return order;
+}
+
 module.exports = {
     createOrder,
     getAllOrders,
     getDeliveringOrders,
     getOrderById,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    getOrderByUID
 }

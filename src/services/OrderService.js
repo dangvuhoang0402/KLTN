@@ -104,7 +104,7 @@ const getOrderById = async (id) => {
 const updateOrder = async (id, orderData) => {
     try {
         // Get the current order and populate food items
-        const currentOrder = await OrderRepo.getOrderById(id);
+        const currentOrder = await OrderRepo.getOrderByUID(id);
         if (!currentOrder) {
             throw new CustomError('Order not found', 404);
         }
@@ -157,11 +157,59 @@ const deleteOrder = async (id) => {
     return order;
 }
 
+const checkOrderStatus = async (uid) => {
+    try {
+        // Get order from database
+        const order = await OrderRepo.getOrderByUID(uid);
+        if (!order) {
+            throw new CustomError('Order not found', 404);
+        }
+
+        // Check status with PayPal
+        const paypalStatus = await PaypalService.checkInvoiceStatus(order.paypal_invoice_id);
+
+        // Map PayPal status to our order status
+        let newStatus = order.Status;
+        switch(paypalStatus.paypalStatus.toLowerCase()) {
+            case 'paid':
+                newStatus = 2; // Change to your delivery status
+                break;
+            case 'cancelled':
+                newStatus = 4; // Change to your cancelled status
+                break;
+            // Add more status mappings as needed
+        }
+
+        // Update order status if changed
+        if (newStatus !== order.Status) {
+            await OrderRepo.updateOrder(order._id, { Status: newStatus });
+        }
+
+        return {
+            orderId: order._id,
+            status: newStatus,
+            paypalStatus: paypalStatus.paypalStatus,
+            paidAmount: paypalStatus.paidAmount,
+            items: order.items,
+            totalPrice: order.Total_Price
+        };
+
+    } catch (error) {
+        console.error('Check order status error:', error);
+        if (error instanceof CustomError) {
+            throw error;
+        }
+        throw new CustomError(`Failed to check order status: ${error.message}`, 500);
+    }
+};
+
+// Add to module.exports
 module.exports = {
     getAllOrders,
     createOrder,
     getOrderById,
     updateOrder,
     deleteOrder,
-    getDeliveringOrder
+    getDeliveringOrder,
+    checkOrderStatus
 }

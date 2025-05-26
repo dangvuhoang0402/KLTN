@@ -33,6 +33,15 @@ const OrderSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        UID: {
+            type: String,
+            required: true,
+            unique: true, // Ensure UID is unique
+        },
+        paypal_invoice_id: {
+            type: String,
+            required: true,
+        },
     },
     { timestamps: true }
 );

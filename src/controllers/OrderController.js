@@ -72,11 +72,25 @@ const deleteOrder = async (req, res, next) => {
     }
 }
 
+const checkOrderStatus = async (req, res, next) => {
+    try {
+        const { uid } = req.params;
+        const statusResult = await OrderService.checkOrderStatus(uid);
+        res.json({
+            message: 'Successfully checked order status',
+            data: statusResult
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllOrders,
     createOrder,
     getOrderById,
     updateOrder,
     deleteOrder,
-    getDeliveringOrder
+    getDeliveringOrder,
+    checkOrderStatus
 }

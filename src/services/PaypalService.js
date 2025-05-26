@@ -148,6 +148,28 @@ class PaypalService {
             throw new Error('Failed to generate QR code');
         }
     }
+    
+    async checkInvoiceStatus(invoiceId) {
+        try {
+            const token = await this.getAccessToken();
+            const endpoint = `${this.baseURL}/v1/invoicing/invoices/${invoiceId}`;
+            
+            const response = await this.axiosInstance.get(endpoint, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            return {
+                paypalStatus: response.data.status,
+                paidAmount: response.data.paid_amount?.value || 0
+            };
+        } catch (error) {
+            console.error('PayPal check invoice status error:', error);
+            throw new Error('Failed to check PayPal invoice status');
+        }
+    }
 }
 
 module.exports = new PaypalService();
