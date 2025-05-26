@@ -85,6 +85,26 @@ const checkOrderStatus = async (req, res, next) => {
     }
 };
 
+const updateOrderStatus = async (req, res, next) => {
+    try {
+        const { uid } = req.params;
+        const { status } = req.body;
+
+        if (!status) {
+            throw new CustomError('Status is required', 400);
+        }
+
+        const updatedOrder = await OrderService.updateOrderStatus(uid, status);
+        
+        res.json({
+            message: 'Successfully updated order status',
+            data: updatedOrder
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllOrders,
     createOrder,
@@ -92,5 +112,6 @@ module.exports = {
     updateOrder,
     deleteOrder,
     getDeliveringOrder,
-    checkOrderStatus
+    checkOrderStatus,
+    updateOrderStatus
 }

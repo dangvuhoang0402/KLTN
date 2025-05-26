@@ -38,13 +38,22 @@ const deleteOrder = async (id) => {
     return order;
 }
 
-const getOrderByUID = async (id) => {
-    const order = await Order.findOne({ UID: id }).populate('items.FoodId');
-    if (!order) {
-        return null;
-    }
+const getOrderByUID = async (uid) => {
+    return await Order.findOne({ uid }).populate('items.FoodId');
+};
+
+const updateOrderByUID = async (uid, updateData) => {
+    return await Order.findOneAndUpdate(
+        { uid },
+        updateData,
+        { new: true }
+    ).populate('items.FoodId');
+};
+
+const getLatestOrder = async () => {
+    const order = await Order.findOne().sort({ createdAt: -1 });
     return order;
-}
+};
 
 module.exports = {
     createOrder,
@@ -53,5 +62,7 @@ module.exports = {
     getOrderById,
     updateOrder,
     deleteOrder,
-    getOrderByUID
+    getOrderByUID,
+    updateOrderByUID,
+    getLatestOrder
 }

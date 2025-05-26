@@ -21,9 +21,29 @@ const getDeliveringOrder = async () => {
     return order;
 }
 
+const generateNextUID = async () => {
+    // Get the latest order
+    const latestOrder = await OrderRepo.getLatestOrder();
+    
+    // If no orders exist, start from 000
+    if (!latestOrder || !latestOrder.uid) {
+        return '000';
+    }
+
+    // Get current number and increment
+    const currentNum = parseInt(latestOrder.uid);
+    if (currentNum >= 999) {
+        throw new CustomError('Maximum order limit reached', 500);
+    }
+
+    // Convert to 3-digit string with leading zeros
+    return (currentNum + 1).toString().padStart(3, '0');
+};
+
 const createOrder = async (req) => {
     try {
         const orderData = req.body;
+        const uid = await generateNextUID();
 
         // Validate order data
         if (!orderData.items || !Array.isArray(orderData.items)) {
@@ -66,8 +86,9 @@ const createOrder = async (req) => {
         // Generate QR code
         const qrCodeUrl = await PaypalService.generateQRCode(paypalResponse.invoiceId);
 
-        // Store original order data with PayPal info
+        // Store original order data with PayPal info and UID
         const enrichedOrderData = {
+            uid: uid,
             items: orderData.items,
             Status: 1, // Pending status
             QR_URL: qrCodeUrl,
@@ -104,7 +125,7 @@ const getOrderById = async (id) => {
 const updateOrder = async (id, orderData) => {
     try {
         // Get the current order and populate food items
-        const currentOrder = await OrderRepo.getOrderByUID(id);
+        const currentOrder = await OrderRepo.getOrderById(id);
         if (!currentOrder) {
             throw new CustomError('Order not found', 404);
         }
@@ -203,6 +224,49 @@ const checkOrderStatus = async (uid) => {
     }
 };
 
+const updateOrderStatus = async (uid, newStatus) => {
+    try {
+        // Validate status value
+        if (![1, 2, 3, 4].includes(Number(newStatus))) {
+            throw new CustomError('Invalid status value. Must be 1, 2, 3 or 4', 400);
+        }
+
+        // Find order by UID
+        const order = await OrderRepo.getOrderByUID(uid);
+        if (!order) {
+            throw new CustomError('Order not found', 404);
+        }
+
+        // If updating to delivered status (3), decrease food quantities
+        if (Number(newStatus) === 3 && order.Status !== 3) {
+            await Promise.all(order.items.map(async (item) => {
+                const food = await FoodRepo.getFoodById(item.FoodId);
+                if (!food) {
+                    throw new CustomError(`Food with id ${item.FoodId} not found`, 404);
+                }
+
+                const newQuantity = food.Quantity - item.Quantity;
+                if (newQuantity < 0) {
+                    throw new CustomError(`Insufficient quantity for food: ${food.Name}`, 400);
+                }
+
+                await FoodRepo.updateFood(item.FoodId, { Quantity: newQuantity });
+            }));
+        }
+
+        // Update order status
+        const updatedOrder = await OrderRepo.updateOrderByUID(uid, { Status: Number(newStatus) });
+        return updatedOrder;
+
+    } catch (error) {
+        console.error('Update order status error:', error);
+        if (error instanceof CustomError) {
+            throw error;
+        }
+        throw new CustomError(`Failed to update order status: ${error.message}`, 500);
+    }
+};
+
 // Add to module.exports
 module.exports = {
     getAllOrders,
@@ -211,5 +275,6 @@ module.exports = {
     updateOrder,
     deleteOrder,
     getDeliveringOrder,
-    checkOrderStatus
+    checkOrderStatus,
+    updateOrderStatus
 }
