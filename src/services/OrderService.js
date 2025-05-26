@@ -226,40 +226,60 @@ const checkOrderStatus = async (UID) => {
 
 const updateOrderStatus = async (UID, newStatus) => {
     try {
+        console.log(`[UpdateStatus] Starting status update for order UID: ${UID} to status: ${newStatus}`);
+
         // Validate status value
         if (![1, 2, 3, 4].includes(Number(newStatus))) {
+            console.log(`[UpdateStatus] Invalid status value: ${newStatus}`);
             throw new CustomError('Invalid status value. Must be 1, 2, 3 or 4', 400);
         }
 
         // Find order by UID
         const order = await OrderRepo.getOrderByUID(UID);
         if (!order) {
+            console.log(`[UpdateStatus] Order not found: ${UID}`);
             throw new CustomError('Order not found', 404);
         }
+        console.log(`[UpdateStatus] Found order: ${order._id}, current status: ${order.Status}`);
 
         // If updating to delivered status (3), decrease food quantities
         if (Number(newStatus) === 3 && order.Status !== 3) {
+            console.log(`[UpdateStatus] Processing delivery status update, updating food quantities`);
+            
             await Promise.all(order.items.map(async (item) => {
                 const food = await FoodRepo.getFoodById(item.FoodId);
                 if (!food) {
+                    console.log(`[UpdateStatus] Food not found: ${item.FoodId}`);
                     throw new CustomError(`Food with id ${item.FoodId} not found`, 404);
                 }
 
                 const newQuantity = food.Quantity - item.Quantity;
+                console.log(`[UpdateStatus] Calculating new quantity for ${food.Name}: ${food.Quantity} - ${item.Quantity} = ${newQuantity}`);
+                
                 if (newQuantity < 0) {
+                    console.log(`[UpdateStatus] Insufficient quantity for ${food.Name}`);
                     throw new CustomError(`Insufficient quantity for food: ${food.Name}`, 400);
                 }
 
                 await FoodRepo.updateFood(item.FoodId, { Quantity: newQuantity });
+                console.log(`[UpdateStatus] Updated quantity for ${food.Name} to ${newQuantity}`);
             }));
+            
+            console.log(`[UpdateStatus] Completed food quantity updates`);
         }
 
         // Update order status
+        console.log(`[UpdateStatus] Updating order status to ${newStatus}`);
         const updatedOrder = await OrderRepo.updateOrderByUID(UID, { Status: Number(newStatus) });
+        console.log(`[UpdateStatus] Status update complete for order: ${updatedOrder._id}`);
+
         return updatedOrder;
 
     } catch (error) {
-        console.error('Update order status error:', error);
+        console.error('[UpdateStatus] Error occurred:', {
+            message: error.message,
+            stack: error.stack
+        });
         if (error instanceof CustomError) {
             throw error;
         }
