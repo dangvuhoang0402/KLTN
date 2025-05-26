@@ -26,12 +26,12 @@ const generateNextUID = async () => {
     const latestOrder = await OrderRepo.getLatestOrder();
     
     // If no orders exist, start from 000
-    if (!latestOrder || !latestOrder.uid) {
+    if (!latestOrder || !latestOrder.UID) {
         return '000';
     }
 
     // Get current number and increment
-    const currentNum = parseInt(latestOrder.uid);
+    const currentNum = parseInt(latestOrder.UID);
     if (currentNum >= 999) {
         throw new CustomError('Maximum order limit reached', 500);
     }
@@ -43,7 +43,7 @@ const generateNextUID = async () => {
 const createOrder = async (req) => {
     try {
         const orderData = req.body;
-        const uid = await generateNextUID();
+        const UID = await generateNextUID();
 
         // Validate order data
         if (!orderData.items || !Array.isArray(orderData.items)) {
@@ -88,7 +88,7 @@ const createOrder = async (req) => {
 
         // Store original order data with PayPal info and UID
         const enrichedOrderData = {
-            UID: uid,  // Changed from 'uid' to 'UID' to match schema
+            UID: UID,
             items: orderData.items,
             Status: 1, // Pending status
             QR_URL: qrCodeUrl,
@@ -178,10 +178,10 @@ const deleteOrder = async (id) => {
     return order;
 }
 
-const checkOrderStatus = async (uid) => {
+const checkOrderStatus = async (UID) => {
     try {
         // Get order from database
-        const order = await OrderRepo.getOrderByUID(uid);
+        const order = await OrderRepo.getOrderByUID(UID);
         if (!order) {
             throw new CustomError('Order not found', 404);
         }
@@ -224,7 +224,7 @@ const checkOrderStatus = async (uid) => {
     }
 };
 
-const updateOrderStatus = async (uid, newStatus) => {
+const updateOrderStatus = async (UID, newStatus) => {
     try {
         // Validate status value
         if (![1, 2, 3, 4].includes(Number(newStatus))) {
@@ -232,7 +232,7 @@ const updateOrderStatus = async (uid, newStatus) => {
         }
 
         // Find order by UID
-        const order = await OrderRepo.getOrderByUID(uid);
+        const order = await OrderRepo.getOrderByUID(UID);
         if (!order) {
             throw new CustomError('Order not found', 404);
         }
@@ -255,7 +255,7 @@ const updateOrderStatus = async (uid, newStatus) => {
         }
 
         // Update order status
-        const updatedOrder = await OrderRepo.updateOrderByUID(uid, { Status: Number(newStatus) });
+        const updatedOrder = await OrderRepo.updateOrderByUID(UID, { Status: Number(newStatus) });
         return updatedOrder;
 
     } catch (error) {

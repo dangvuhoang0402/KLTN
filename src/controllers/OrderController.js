@@ -74,8 +74,8 @@ const deleteOrder = async (req, res, next) => {
 
 const checkOrderStatus = async (req, res, next) => {
     try {
-        const { uid } = req.params;
-        const statusResult = await OrderService.checkOrderStatus(uid);
+        const { UID } = req.params;
+        const statusResult = await OrderService.checkOrderStatus(UID);
         res.json({
             message: 'Successfully checked order status',
             data: statusResult
@@ -87,14 +87,14 @@ const checkOrderStatus = async (req, res, next) => {
 
 const updateOrderStatus = async (req, res, next) => {
     try {
-        const { uid } = req.params;
+        const { UID } = req.params;
         const { status } = req.body;
 
         if (!status) {
             throw new CustomError('Status is required', 400);
         }
 
-        const updatedOrder = await OrderService.updateOrderStatus(uid, status);
+        const updatedOrder = await OrderService.updateOrderStatus(UID, status);
         
         res.json({
             message: 'Successfully updated order status',

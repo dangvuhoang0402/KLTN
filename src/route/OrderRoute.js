@@ -5,8 +5,8 @@ const orderController = require('../controllers/OrderController')
 router.get("/", orderController.getAllOrders)
 router.post("/", orderController.createOrder)
 router.get("/delivering", orderController.getDeliveringOrder)
-router.get("/status/:uid", orderController.checkOrderStatus)
-router.post("/status/:uid", orderController.updateOrderStatus)
+router.get("/status/:UID", orderController.checkOrderStatus);
+router.post("/status/:UID", orderController.updateOrderStatus);
 router.route("/:id")
     .delete(orderController.deleteOrder)
     .put(orderController.updateOrder)

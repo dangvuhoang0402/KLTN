@@ -38,13 +38,13 @@ const deleteOrder = async (id) => {
     return order;
 }
 
-const getOrderByUID = async (uid) => {
-    return await Order.findOne({ UID: uid }).populate('items.FoodId'); // Changed from uid to UID
+const getOrderByUID = async (UID) => {
+    return await Order.findOne({ UID }).populate('items.FoodId');
 };
 
-const updateOrderByUID = async (uid, updateData) => {
+const updateOrderByUID = async (UID, updateData) => {
     return await Order.findOneAndUpdate(
-        { uid },
+        { UID },
         updateData,
         { new: true }
     ).populate('items.FoodId');
