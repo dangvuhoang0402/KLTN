@@ -88,7 +88,7 @@ const createOrder = async (req) => {
 
         // Store original order data with PayPal info and UID
         const enrichedOrderData = {
-            uid: uid,
+            UID: uid,  // Changed from 'uid' to 'UID' to match schema
             items: orderData.items,
             Status: 1, // Pending status
             QR_URL: qrCodeUrl,

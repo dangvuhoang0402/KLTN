@@ -39,7 +39,7 @@ const deleteOrder = async (id) => {
 }
 
 const getOrderByUID = async (uid) => {
-    return await Order.findOne({ uid }).populate('items.FoodId');
+    return await Order.findOne({ UID: uid }).populate('items.FoodId'); // Changed from uid to UID
 };
 
 const updateOrderByUID = async (uid, updateData) => {
@@ -52,7 +52,7 @@ const updateOrderByUID = async (uid, updateData) => {
 
 const getLatestOrder = async () => {
     const order = await Order.findOne().sort({ createdAt: -1 });
-    return order;
+    return order?.UID; // Changed from uid to UID
 };
 
 module.exports = {
