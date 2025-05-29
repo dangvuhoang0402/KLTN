@@ -22,28 +22,63 @@ const getDeliveringOrder = async () => {
 }
 
 const generateNextUID = async () => {
-    // Get the latest order
-    const latestOrder = await OrderRepo.getLatestOrder();
-    
-    // If no orders exist, start from 000
-    if (!latestOrder || !latestOrder.UID) {
-        return '000';
-    }
+    try {
+        // Get the latest order
+        const latestOrder = await OrderRepo.getLatestOrder();
+        
+        // If no orders exist, start from 000
+        if (!latestOrder || !latestOrder.UID === undefined) {
+            // Check if 000 exists
+            const existingOrder = await OrderRepo.getOrderByUID('000');
+            if (existingOrder) {
+                // Find the first available number
+                for (let i = 0; i <= 999; i++) {
+                    const UID = i.toString().padStart(3, '0');
+                    const exists = await OrderRepo.getOrderByUID(UID);
+                    if (!exists) {
+                        return UID;
+                    }
+                }
+                throw new CustomError('No available UIDs', 500);
+            }
+            return '000';
+        }
 
-    // Get current number and increment
-    const currentNum = parseInt(latestOrder.UID);
-    if (currentNum >= 999) {
-        throw new CustomError('Maximum order limit reached', 500);
-    }
+        // Get current number and increment
+        const currentNum = parseInt(latestOrder.UID);
+        if (currentNum >= 999) {
+            throw new CustomError('Maximum order limit reached', 500);
+        }
 
-    // Convert to 3-digit string with leading zeros
-    return (currentNum + 1).toString().padStart(3, '0');
+        // Generate next UID
+        const nextUID = (currentNum + 1).toString().padStart(3, '0');
+        
+        // Verify it doesn't exist
+        const existingOrder = await OrderRepo.getOrderByUID(nextUID);
+        if (existingOrder) {
+            // Find the first available number after currentNum
+            for (let i = currentNum + 2; i <= 999; i++) {
+                const UID = i.toString().padStart(3, '0');
+                const exists = await OrderRepo.getOrderByUID(UID);
+                if (!exists) {
+                    return UID;
+                }
+            }
+            throw new CustomError('No available UIDs', 500);
+        }
+
+        return nextUID;
+    } catch (error) {
+        console.error('Generate UID error:', error);
+        throw new CustomError(`Failed to generate UID: ${error.message}`, 500);
+    }
 };
 
 const createOrder = async (req) => {
     try {
         const orderData = req.body;
         const UID = await generateNextUID();
+        console.log('Generated UID:', UID); // Debug log
 
         // Validate order data
         if (!orderData.items || !Array.isArray(orderData.items)) {
@@ -88,14 +123,15 @@ const createOrder = async (req) => {
 
         // Store original order data with PayPal info and UID
         const enrichedOrderData = {
-            UID: UID,
+            UID: UID, // Make sure UID is properly set
             items: orderData.items,
-            Status: 1, // Pending status
+            Status: 1,
             QR_URL: qrCodeUrl,
             paypal_invoice_id: paypalResponse.invoiceId,
-            Total_Price: totalPriceVND // Store total price in VND
+            Total_Price: totalPriceVND
         };
 
+        console.log('Creating order with data:', enrichedOrderData); // Debug log
         const order = await OrderRepo.createOrder(enrichedOrderData);
         return order;
 
@@ -103,7 +139,7 @@ const createOrder = async (req) => {
         console.error('Order creation error:', {
             message: error.message,
             stack: error.stack,
-            status: error.status
+            data: error.data || 'No additional data'
         });
         
         if (error instanceof CustomError) {

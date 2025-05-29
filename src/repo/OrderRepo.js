@@ -2,8 +2,19 @@ const Order = require('../models/Order');
 const mongoose = require('mongoose');
 
 const createOrder = async (orderData) => {
-    const newOrder = await Order.create(orderData);
-    return newOrder;
+    try {
+        console.log('Creating order with data:', JSON.stringify(orderData, null, 2));
+        const order = new Order({
+            ...orderData,
+            UID: orderData.UID // Ensure UID is explicitly set
+        });
+        const savedOrder = await order.save();
+        console.log('Order created successfully:', savedOrder.UID);
+        return savedOrder;
+    } catch (error) {
+        console.error('Order creation error in repo:', error);
+        throw error;
+    }
 }
 
 const getAllOrders = async () => {
@@ -38,6 +49,13 @@ const deleteOrder = async (id) => {
     return order;
 }
 
+const getLatestOrder = async () => {
+    return await Order.findOne()
+        .sort({ UID: -1 })
+        .select('UID')
+        .lean();
+};
+
 const getOrderByUID = async (UID) => {
     return await Order.findOne({ UID }).populate('items.FoodId');
 };
@@ -48,11 +66,6 @@ const updateOrderByUID = async (UID, updateData) => {
         updateData,
         { new: true }
     ).populate('items.FoodId');
-};
-
-const getLatestOrder = async () => {
-    const order = await Order.findOne().sort({ createdAt: -1 });
-    return order?.UID; // Changed from uid to UID
 };
 
 module.exports = {
