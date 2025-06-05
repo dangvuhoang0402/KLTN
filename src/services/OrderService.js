@@ -17,7 +17,7 @@ const getAllOrders = async () => {
 }
 
 const getDeliveringOrder = async () => {
-    const order = await OrderRepo.getDeliveringOrder();
+    const order = await OrderRepo.getDeliveringOrders();
     return order;
 }
 
