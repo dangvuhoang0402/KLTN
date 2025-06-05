@@ -23,7 +23,7 @@ const getAllOrders = async () => {
 }
 
 const getDeliveringOrders = async () => {
-    const deliveringOrders = await Order.find({ status: 2 }).populate('items.FoodId');
+    const deliveringOrders = await Order.find({ Status: 2 }).populate('items.FoodId');
     return deliveringOrders;
 }
 
