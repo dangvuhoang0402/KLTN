@@ -68,6 +68,12 @@ const updateOrderByUID = async (UID, updateData) => {
     ).populate('items.FoodId');
 };
 
+const getOrdersBetweenDates = async (start, end) => {
+    return Order.find({
+        createdAt: { $gte: start, $lt: end }
+    });
+};
+
 module.exports = {
     createOrder,
     getAllOrders,
@@ -77,5 +83,6 @@ module.exports = {
     deleteOrder,
     getOrderByUID,
     updateOrderByUID,
-    getLatestOrder
+    getLatestOrder,
+    getOrdersBetweenDates
 }

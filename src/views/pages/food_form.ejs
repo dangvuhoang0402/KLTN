@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= food ? 'Chỉnh sửa món ăn' : 'Thêm món ăn mới' %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background:#f6f8fa;font-family:sans-serif;margin:0;">
+    <div style="max-width:500px;margin:32px auto;background:#fff;padding:32px 28px;border-radius:12px;box-shadow:0 2px 15px rgba(0,0,0,0.07);">
+        <h2 style="color:#222;margin-bottom:24px;"><%= food ? 'Chỉnh sửa món ăn' : 'Thêm món ăn mới' %></h2>
+        <form action="<%= food ? '/food/' + food._id + '?_method=PUT' : '/food' %>" method="POST" enctype="multipart/form-data">
+            <div style="margin-bottom:1.2rem;">
+                <label style="font-weight:500;">Tên món ăn:</label>
+                <input type="text" name="Name" value="<%= food ? food.Name : '' %>" required style="width:100%;padding:8px;border-radius:5px;border:1px solid #ccc;">
+            </div>
+            <div style="margin-bottom:1.2rem;">
+                <label style="font-weight:500;">Giá:</label>
+                <input type="number" name="Price" value="<%= food ? food.Price : '' %>" required style="width:100%;padding:8px;border-radius:5px;border:1px solid #ccc;">
+            </div>
+            <div style="margin-bottom:1.2rem;">
+                <label style="font-weight:500;">Số lượng:</label>
+                <input type="number" name="Quantity" value="<%= food ? food.Quantity : '' %>" required style="width:100%;padding:8px;border-radius:5px;border:1px solid #ccc;">
+            </div>
+            <div style="margin-bottom:1.2rem;">
+                <label style="font-weight:500;">Loại:</label>
+                <select name="Type" style="width:100%;padding:8px;border-radius:5px;border:1px solid #ccc;">
+                    <option value="0" <%= food && food.Type === 0 ? 'selected' : '' %>>Món ăn</option>
+                    <option value="1" <%= food && food.Type === 1 ? 'selected' : '' %>>Đồ uống</option>
+                </select>
+            </div>
+            <div style="margin-bottom:1.2rem;">
+                <label style="font-weight:500;">Ảnh:</label>
+                <input type="file" name="image" style="display:block;margin-top:6px;">
+                <% if(food && food.image) { %>
+                    <img src="<%= food.image %>" width="70" style="margin-top:8px;border-radius:6px;box-shadow:0 2px 8px #eee;"/>
+                <% } %>
+            </div>
+            <button type="submit" 
+                style="padding:8px 24px;background:#007bff;color:#fff;border:none;border-radius:5px;font-weight:500;cursor:pointer;margin-right:10px;">
+                <i class="fa fa-save"></i> <%= food ? 'Cập nhật' : 'Thêm' %>
+            </button>
+            <a href="/view/foods" 
+                style="padding:8px 24px;background:#6c757d;color:#fff;border:none;border-radius:5px;text-decoration:none;font-weight:500;">
+                <i class="fa fa-arrow-left"></i> Quay lại
+            </a>
+        </form>
+    </div>
+</body>
+</html>

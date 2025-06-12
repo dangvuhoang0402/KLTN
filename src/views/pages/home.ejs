@@ -2,210 +2,43 @@
 <html>
 <head>
     <title>Trang Chủ</title>
-    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <div class="navbar">
-        <h1><i class="fa-solid fa-book-reader"></i> Quản Lý Thư Viện</h1>
-        <a href="/auth/logout" class="logout-btn">
-            <i class="fa-solid fa-sign-out-alt"></i> Đăng Xuất
-        </a>
+<body style="background:#f6f8fa;font-family:sans-serif;margin:0;">
+    <div style="max-width:900px;margin:32px auto;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;">
+            <div style="background:#fff;border-radius:10px;box-shadow:0 2px 15px rgba(0,0,0,0.07);padding:2rem 1.5rem;">
+                <h3 style="color:#2c3e50;margin-bottom:1.2rem;border-bottom:2px solid #eee;padding-bottom:0.5rem;">
+                    <i class="fa-solid fa-bowl-food"></i> Quản Lý Món Ăn
+                </h3>
+                <a href="/view/foods" style="display:flex;align-items:center;padding:0.8rem 1rem;border-radius:6px;color:#2c3e50;text-decoration:none;transition:all 0.2s;font-weight:500;margin-bottom:0.7rem;">
+                    <i class="fa-solid fa-list"></i>
+                    <span style="margin-left:0.8rem;">Danh Sách Món Ăn</span>
+                </a>
+                <a href="/view/foods/new" style="display:flex;align-items:center;padding:0.8rem 1rem;border-radius:6px;color:#2c3e50;text-decoration:none;transition:all 0.2s;font-weight:500;">
+                    <i class="fa-solid fa-plus"></i>
+                    <span style="margin-left:0.8rem;">Thêm Món Ăn</span>
+                </a>
+            </div>
+            <div style="background:#fff;border-radius:10px;box-shadow:0 2px 15px rgba(0,0,0,0.07);padding:2rem 1.5rem;">
+                <h3 style="color:#2c3e50;margin-bottom:1.2rem;border-bottom:2px solid #eee;padding-bottom:0.5rem;">
+                    <i class="fa-solid fa-receipt"></i> Quản Lý Đơn Hàng
+                </h3>
+                <a href="/view/orders" style="display:flex;align-items:center;padding:0.8rem 1rem;border-radius:6px;color:#2c3e50;text-decoration:none;transition:all 0.2s;font-weight:500;">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <span style="margin-left:0.8rem;">Danh Sách Đơn Hàng</span>
+                </a>
+            </div>
+            <div style="background:#fff;border-radius:10px;box-shadow:0 2px 15px rgba(0,0,0,0.07);padding:2rem 1.5rem;">
+                <h3 style="color:#2c3e50;margin-bottom:1.2rem;border-bottom:2px solid #eee;padding-bottom:0.5rem;">
+                    <i class="fa-solid fa-chart-bar"></i> Báo Cáo Tháng
+                </h3>
+                <a href="/view/report" style="display:flex;align-items:center;padding:0.8rem 1rem;border-radius:6px;color:#2c3e50;text-decoration:none;transition:all 0.2s;font-weight:500;">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span style="margin-left:0.8rem;">Xem Báo Cáo</span>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <div class="dashboard-grid">
-        <% if (user.role === 'librarian' || user.role === 'owner') { %>
-            <div class="dashboard-card readers">
-                <h3><i class="fa-solid fa-users"></i> Quản Lý Độc Giả</h3>
-                <div class="card-content">
-                    <a href="/reader/new" class="menu-item">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span>Tạo Thẻ Độc Giả</span>
-                    </a>
-                    <a href="/reader" class="menu-item">
-                        <i class="fa-solid fa-users"></i>
-                        <span>Danh Sách Độc Giả</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="dashboard-card books">
-                <h3><i class="fa-solid fa-book"></i> Quản Lý Sách</h3>
-                <div class="card-content">
-                    <a href="/book/new" class="menu-item">
-                        <i class="fa-solid fa-plus-circle"></i>
-                        <span>Tiếp Nhận Sách</span>
-                    </a>
-                    <a href="/book" class="menu-item">
-                        <i class="fa-solid fa-book-open"></i>
-                        <span>Danh Sách Sách</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="dashboard-card tickets">
-                <h3><i class="fa-solid fa-ticket"></i> Quản Lý Phiếu</h3>
-                <div class="card-content">
-                    <a href="/loan-ticket/new" class="menu-item">
-                        <i class="fa-solid fa-receipt"></i>
-                        <span>Tạo Phiếu Mượn</span>
-                    </a>
-                    <a href="/loan-ticket" class="menu-item">
-                        <i class="fa-solid fa-list-ul"></i>
-                        <span>Danh Sách Phiếu Mượn</span>
-                    </a>
-                    <a href="/return-ticket/new" class="menu-item">
-                        <i class="fa-solid fa-receipt"></i>
-                        <span>Tạo Phiếu Trả</span>
-                    </a>
-                    <a href="/return-ticket" class="menu-item">
-                        <i class="fa-solid fa-list-ul"></i>
-                        <span>Danh Sách Phiếu Trả</span>
-                    </a>
-                    <a href="/penalty-receipt/new" class="menu-item">
-                        <i class="fa-solid fa-receipt"></i>
-                        <span>Tạo Phiếu Thu Phạt</span>
-                    </a>
-                    <a href="/penalty-receipt" class="menu-item">
-                        <i class="fa-solid fa-list-ul"></i>
-                        <span>Danh Sách Phiếu Thu Phạt</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="dashboard-card reports">
-                <h3><i class="fa-solid fa-chart-bar"></i> Báo Cáo Thống Kê</h3>
-                <div class="card-content">
-                    <a href="/report-book-borrow/new" class="menu-item">
-                        <i class="fa-solid fa-chart-line"></i>
-                        <span>Báo Cáo Mượn Sách</span>
-                    </a>
-                    <a href="/report-book-return/new" class="menu-item">
-                        <i class="fa-solid fa-chart-pie"></i>
-                        <span>Báo Cáo Trả Sách</span>
-                    </a>
-                </div>
-            </div>
-        <% } %>
-
-        <% if (user.role === 'owner') { %>
-            <div class="dashboard-card rules">
-                <h3><i class="fa-solid fa-gears"></i> Quản Lý Qui Định</h3>
-                <div class="card-content">
-                    <a href="/rules/reader" class="menu-item">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>QĐ1: Qui Định Về Độc Giả</span>
-                    </a>
-                    <a href="/rules/book" class="menu-item">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>QĐ2: Qui Định Về Sách</span>
-                    </a>
-                </div>
-            </div>
-        <% } %>
-
-        <% if (user.role === 'reader') { %>
-            <div class="dashboard-card books">
-                <h3><i class="fa-solid fa-book"></i> Quản Lý Sách</h3>
-                <div class="card-content">
-                    <a href="/book" class="menu-item">
-                        <i class="fa-solid fa-book-open"></i>
-                        <span>Danh Sách Sách</span>
-                    </a>
-                </div>
-            </div>
-        <% } %>
-    </div>
-
-    <style>
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background: #2c3e50;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .navbar h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .logout-btn {
-            padding: 0.5rem 1rem;
-            background: #e74c3c;
-            color: white;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-
-        .dashboard-card h3 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.5rem;
-        }
-
-        .card-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 1rem;
-            border-radius: 6px;
-            color: #2c3e50;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .menu-item:hover {
-            background: #f8f9fa;
-            color: #007bff;
-        }
-
-        .menu-item i {
-            margin-right: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-            }
-        }
-    </style>
 </body>
 </html>

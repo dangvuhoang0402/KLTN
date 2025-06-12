@@ -9,7 +9,7 @@ const login = async (req, res, next) => {
         });
         return res.redirect('/home');
     }
-    return res.redirect('/auth/login');
+    return res.redirect('/auth/login',);
 };
 
 const logout = async (req, res, next) => {
@@ -18,7 +18,7 @@ const logout = async (req, res, next) => {
 };
 
 const loginPage = async (req, res, next) => {
-    res.render('pages/login');
+    res.render('pages/login',{layout: false});
 };
 
 module.exports = {

@@ -279,7 +279,7 @@ const updateOrderStatus = async (UID, newStatus) => {
         console.log(`[UpdateStatus] Found order: ${order._id}, current status: ${order.Status}`);
 
         // If updating to delivered status (3), decrease food quantities
-        if (Number(newStatus) === 3 && order.Status !== 3) {
+        if (Number(newStatus) === 2 && order.Status !== 2) {
             console.log(`[UpdateStatus] Processing delivery status update, updating food quantities`);
             
             await Promise.all(order.items.map(async (item) => {
@@ -323,6 +323,47 @@ const updateOrderStatus = async (UID, newStatus) => {
     }
 };
 
+const getMonthlyReport = async (month, year) => {
+    // Get all orders in the given month/year
+    const start = new Date(year, month - 1, 1);
+    const end = new Date(year, month, 1);
+
+    const orders = await OrderRepo.getOrdersBetweenDates(start, end);
+
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce((sum, order) => sum + order.Total_Price, 0);
+
+    // Calculate best seller
+    const foodSales = {};
+    orders.forEach(order => {
+        order.items.forEach(item => {
+            if (!foodSales[item.FoodId]) {
+                foodSales[item.FoodId] = 0;
+            }
+            foodSales[item.FoodId] += item.Quantity;
+        });
+    });
+
+    let bestSellerId = null;
+    let bestSellerQuantity = 0;
+    for (const [foodId, qty] of Object.entries(foodSales)) {
+        if (qty > bestSellerQuantity) {
+            bestSellerId = foodId;
+            bestSellerQuantity = qty;
+        }
+    }
+
+    let bestSeller = { Name: 'Không có', Quantity: 0 };
+    if (bestSellerId) {
+        const food = await FoodRepo.getFoodById(bestSellerId);
+        if (food) {
+            bestSeller = { Name: food.Name, Quantity: bestSellerQuantity };
+        }
+    }
+
+    return { totalOrders, totalRevenue, bestSeller };
+};
+
 // Add to module.exports
 module.exports = {
     getAllOrders,
@@ -332,5 +373,6 @@ module.exports = {
     deleteOrder,
     getDeliveringOrder,
     checkOrderStatus,
-    updateOrderStatus
+    updateOrderStatus,
+    getMonthlyReport
 }

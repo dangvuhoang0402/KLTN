@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Báo cáo tháng <%= month %>/<%= year %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background:#f6f8fa;font-family:sans-serif;margin:0;">
+    <div style="max-width:700px;margin:32px auto;">
+        <h2 style="color:#222;margin-bottom:24px;">Báo cáo tháng <%= month %>/<%= year %></h2>
+        <form method="get" action="/view/report" style="margin-bottom:2rem;display:flex;gap:1rem;align-items:center;">
+            <label for="month">Tháng:</label>
+            <select id="month" name="month" style="padding:0.4rem 0.7rem;border-radius:4px;">
+                <% for(let m=1; m<=12; m++) { %>
+                    <option value="<%= m %>" <%= m === month ? 'selected' : '' %>><%= m %></option>
+                <% } %>
+            </select>
+            <label for="year">Năm:</label>
+            <select id="year" name="year" style="padding:0.4rem 0.7rem;border-radius:4px;">
+                <% for(let y=2023; y<=new Date().getFullYear(); y++) { %>
+                    <option value="<%= y %>" <%= y === year ? 'selected' : '' %>><%= y %></option>
+                <% } %>
+            </select>
+            <button type="submit" style="padding:0.4rem 1rem;border-radius:4px;background:#007bff;color:#fff;border:none;font-weight:500;">
+                Xem báo cáo
+            </button>
+        </form>
+        <div style="display:flex;gap:2rem;margin-bottom:2rem;">
+            <div style="background:#f8f9fa;border-radius:8px;padding:1.5rem 2rem;box-shadow:0 2px 8px #eee;text-align:center;flex:1;">
+                <span style="display:block;font-size:1.1rem;color:#555;margin-bottom:0.5rem;">Tổng số đơn</span>
+                <span style="font-size:1.5rem;font-weight:bold;color:#007bff;"><%= totalOrders %></span>
+            </div>
+            <div style="background:#f8f9fa;border-radius:8px;padding:1.5rem 2rem;box-shadow:0 2px 8px #eee;text-align:center;flex:1;">
+                <span style="display:block;font-size:1.1rem;color:#555;margin-bottom:0.5rem;">Tổng doanh thu</span>
+                <span style="font-size:1.5rem;font-weight:bold;color:#007bff;"><%= totalRevenue %> VND</span>
+            </div>
+            <div style="background:#f8f9fa;border-radius:8px;padding:1.5rem 2rem;box-shadow:0 2px 8px #eee;text-align:center;flex:1;">
+                <span style="display:block;font-size:1.1rem;color:#555;margin-bottom:0.5rem;">Món bán chạy nhất</span>
+                <span style="font-size:1.5rem;font-weight:bold;color:#007bff;"><%= bestSeller.Name %> (<%= bestSeller.Quantity %> đã bán)</span>
+            </div>
+        </div>
+        <!-- You can add a chart here using Chart.js and pass data from server -->
+    </div>
+</body>
+</html>

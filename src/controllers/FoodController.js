@@ -20,10 +20,9 @@ const createFood = async (req, res, next) => {
         };
         
         const food = await FoodService.createFood(foodData);
-        res.status(201).json({
-            message: 'Successfully! Create food',
-            data: food
-        });
+        
+        res.redirect('/view/foods/edit-success');
+
     } catch (error) {
         next(error);
     }
@@ -50,11 +49,10 @@ const updateFood = async (req, res, next) => {
             updateData.image = req.file.path;
         }
 
-        const food = await FoodService.updateFood(req.params.id, updateData);
-        res.json({
-            message: 'Successfully! Update food',
-            data: food
-        });
+        await FoodService.updateFood(req.params.id, updateData);
+
+        // Redirect to the success page after editing
+        res.redirect('/view/foods/edit-success');
     } catch (error) {
         next(error);
     }
@@ -63,10 +61,7 @@ const updateFood = async (req, res, next) => {
 const deleteFood = async (req, res, next) => {
     try {
         const food = await FoodService.deleteFood(req.params.id);
-        res.json({
-            message: 'Successfully! Delete food',
-            data: food
-        });
+        res.redirect('/view/foods/edit-success');
     } catch (error) {
         next(error);
     }

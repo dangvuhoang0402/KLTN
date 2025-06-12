@@ -9,7 +9,9 @@ router.get("/", foodController.getAllFood)
 router.post("/", upload.single('image'), foodController.createFood)
 router.route("/:id")
     .delete(foodController.deleteFood)
-    .put(upload.single('image'), foodController.updateFood)
+    .post(upload.single('image'), foodController.updateFood)
     .get(foodController.getFoodById)
+
+router.post("/delete/:id", foodController.deleteFood)
 
 module.exports = router

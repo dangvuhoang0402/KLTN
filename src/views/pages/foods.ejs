@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quản lý món ăn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background:#f6f8fa;font-family:sans-serif;margin:0;">
+    <div style="padding:24px 0 0 0;">
+        <div style="max-width:900px;margin:0 auto;">
+            <h2 style="color:#222;margin-bottom:24px;">Quản lý món ăn</h2>
+            <a href="/view/foods/new" style="display:inline-block;margin-bottom:18px;padding:8px 22px;background:#007bff;color:#fff;border-radius:5px;text-decoration:none;font-weight:500;transition:background 0.2s;">Thêm món ăn</a>
+            <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 15px rgba(0,0,0,0.07);">
+                <thead>
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:12px 8px;text-align:left;">Tên</th>
+                        <th style="padding:12px 8px;text-align:left;">Giá</th>
+                        <th style="padding:12px 8px;text-align:left;">Số lượng</th>
+                        <th style="padding:12px 8px;text-align:left;">Loại</th>
+                        <th style="padding:12px 8px;text-align:left;">Ảnh</th>
+                        <th style="padding:12px 8px;text-align:left;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% foods.forEach(food => { %>
+                        <tr style="border-bottom:1px solid #eee;">
+                            <td style="padding:10px 8px;"><%= food.Name %></td>
+                            <td style="padding:10px 8px;"><%= food.Price %></td>
+                            <td style="padding:10px 8px;"><%= food.Quantity %></td>
+                            <td style="padding:10px 8px;"><%= food.Type === 0 ? 'Món ăn' : 'Đồ uống' %></td>
+                            <td style="padding:10px 8px;">
+                                <img src="<%= food.Image_url %>" width="50" style="border-radius:6px;box-shadow:0 2px 8px #eee;"/>
+                            </td>
+                            <td style="padding:10px 8px;">
+                                <a href="/view/foods/<%= food._id %>/edit" 
+                                   style="display:inline-block;padding:6px 16px;background:#ffc107;color:#222;border:none;border-radius:4px;text-decoration:none;font-weight:500;margin-right:6px;transition:background 0.2s;">
+                                    <i class="fa fa-edit"></i> Sửa
+                                </a>
+                                <form action="/food/delete/<%= food._id %>" method="POST" style="display:inline;">
+                                    <button type="submit" 
+                                        onclick="return confirm('Bạn có chắc muốn xóa?')"
+                                        style="padding:6px 16px;background:#dc3545;color:#fff;border:none;border-radius:4px;font-weight:500;cursor:pointer;transition:background 0.2s;">
+                                        <i class="fa fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
