@@ -5,6 +5,7 @@ const chalk = require('chalk')
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
 const methodOverride = require('method-override');
+const path = require('path');
 
 const connectMongoDB = require('./src/config/database.config')
 const handleError = require('./src/middlewares/handleError');
@@ -28,7 +29,7 @@ const port = process.env.PORT;
 const app = express();
 
 app.set('view engine', 'ejs');
-app.set('views', './src/views');
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.use(express.static('public'));
 app.use(expressLayouts);
 app.set('layout', 'layouts/main');
