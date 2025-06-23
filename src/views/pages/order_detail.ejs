@@ -33,7 +33,7 @@
                 <strong>Ngày tạo:</strong>
                 <%
                     const createdDate = new Date(order.createdAt);
-                    createdDate.setHours(createdDate.getHours() + 7);
+                    createdDate.setHours(createdDate.getHours());
                     const formatted = createdDate.toLocaleString('vi-VN', { hour12: false });
                 %>
                 <%= formatted %>
@@ -57,8 +57,12 @@
                     <tr>
                         <td style="padding:8px;"><%= item.FoodId.Name %></td>
                         <td style="padding:8px;text-align:right;"><%= item.Quantity %></td>
-                        <td style="padding:8px;text-align:right;"><%= item.Price.toLocaleString('vi-VN') %></td>
-                        <td style="padding:8px;text-align:right;"><%= (item.Price * item.Quantity).toLocaleString('vi-VN') %></td>
+                        <td style="padding:8px;text-align:right;">
+                            <%= (item.Price !== undefined && item.Price !== null) ? item.Price.toLocaleString('vi-VN') : '0' %>
+                        </td>
+                        <td style="padding:8px;text-align:right;">
+                            <%= (item.Price && item.Quantity) ? (item.Price * item.Quantity).toLocaleString('vi-VN') : '0' %>
+                        </td>
                     </tr>
                 <% }) %>
             </tbody>

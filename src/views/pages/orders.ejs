@@ -42,7 +42,7 @@
                                 <%
                                     // Add 7 hours (in milliseconds)
                                     const createdDate = new Date(order.createdAt);
-                                    createdDate.setHours(createdDate.getHours() + 7);
+                                    createdDate.setHours(createdDate.getHours());
                                     const formatted = createdDate.toLocaleString('vi-VN', { hour12: false });
                                 %>
                                 <%= formatted %>

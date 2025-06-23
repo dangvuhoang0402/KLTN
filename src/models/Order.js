@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const mongooseDelete = require('mongoose-delete');
-const moment = require('moment-timezone');
 
 const OrderSchema = new mongoose.Schema(
     {
@@ -56,13 +55,6 @@ OrderSchema.plugin(mongooseDelete, {
     deletedAt: true,
     deletedBy: true,
     deletedByType: mongoose.Schema.Types.ObjectId,
-});
-
-OrderSchema.pre('save', function(next) {
-    if (!this.createdAt) {
-        this.createdAt = moment().tz('Asia/Ho_Chi_Minh').toDate();
-    }
-    next();
 });
 
 const Order = mongoose.model('Order', OrderSchema);
