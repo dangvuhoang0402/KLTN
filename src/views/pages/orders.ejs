@@ -36,7 +36,18 @@
                             <% } %>
                         </td>
                         <td style="padding:10px 8px;"><%= order.Total_Price %></td>
-                        <td style="padding:10px 8px;"><%= order.createdAt.toLocaleString() %></td>
+                        <td style="padding:10px 8px;">
+                            <li style="margin-bottom:8px;">
+                                Ngày tạo: 
+                                <%
+                                    // Add 7 hours (in milliseconds)
+                                    const createdDate = new Date(order.createdAt);
+                                    createdDate.setHours(createdDate.getHours() + 7);
+                                    const formatted = createdDate.toLocaleString('vi-VN', { hour12: false });
+                                %>
+                                <%= formatted %>
+                            </li>
+                        </td>
                         <td style="padding:10px 8px;">
                             <a href="/view/orders/<%= order.UID %>" 
                                style="display:inline-block;padding:6px 16px;background:#007bff;color:#fff;border:none;border-radius:4px;text-decoration:none;font-weight:500;transition:background 0.2s;">
