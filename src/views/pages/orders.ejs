@@ -40,12 +40,10 @@
                             <li style="margin-bottom:8px;">
                                 Ngày tạo: 
                                 <%
-                                    // Add 7 hours (in milliseconds)
                                     const createdDate = new Date(order.createdAt);
-                                    createdDate.setHours(createdDate.getHours());
-                                    const formatted = createdDate.toLocaleString('vi-VN', { hour12: false });
+                                    createdDate.setHours(createdDate.getHours()+7);
                                 %>
-                                <%= formatted %>
+                                <%= createdDate %>
                             </li>
                         </td>
                         <td style="padding:10px 8px;">

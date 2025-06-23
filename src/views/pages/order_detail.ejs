@@ -33,10 +33,9 @@
                 <strong>Ngày tạo:</strong>
                 <%
                     const createdDate = new Date(order.createdAt);
-                    createdDate.setHours(createdDate.getHours());
-                    const formatted = createdDate.toLocaleString('vi-VN', { hour12: false });
+                    createdDate.setHours(createdDate.getHours()+7);
                 %>
-                <%= formatted %>
+                <%= createdDate %>
             </li>
             <li style="margin-bottom:8px;">
                 <strong>Tổng tiền:</strong> <%= order.Total_Price ? order.Total_Price.toLocaleString('vi-VN') : 0 %> VND
