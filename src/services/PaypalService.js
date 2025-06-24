@@ -170,6 +170,36 @@ class PaypalService {
             throw new Error('Failed to check PayPal invoice status');
         }
     }
+
+    async cancelInvoice(invoiceId) {
+        try {
+            const token = await this.getAccessToken();
+            const endpoint = `${this.baseURL}/v2/invoicing/invoices/${invoiceId}/cancel`;
+
+            console.log('Cancelling invoice at:', endpoint);
+            console.log('Using Bearer token:', token.substring(0, 20) + '...');
+
+            const response = await this.axiosInstance.post(
+                endpoint,
+                {
+                    // Optionally add a subject or note here
+                    // subject: "Order cancelled",
+                    // note: "Order was cancelled by the user."
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Invoice cancelled response:', JSON.stringify(response.data, null, 2));
+            return response.data;
+        } catch (error) {
+            console.error('PayPal cancel invoice error:', error.response ? error.response.data : error.message);
+            throw new Error('Failed to cancel PayPal invoice');
+        }
+    }
 }
 
 module.exports = new PaypalService();

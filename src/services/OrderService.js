@@ -278,7 +278,7 @@ const updateOrderStatus = async (UID, newStatus) => {
         }
         console.log(`[UpdateStatus] Found order: ${order._id}, current status: ${order.Status}`);
 
-        // If updating to delivered status (3), decrease food quantities
+        // If updating to delivered status (2), decrease food quantities
         if (Number(newStatus) === 2 && order.Status !== 2) {
             console.log(`[UpdateStatus] Processing delivery status update, updating food quantities`);
             
@@ -302,6 +302,17 @@ const updateOrderStatus = async (UID, newStatus) => {
             }));
             
             console.log(`[UpdateStatus] Completed food quantity updates`);
+        }
+
+        // If updating to cancelled status (4), cancel PayPal invoice
+        if (Number(newStatus) === 4 && order.Status !== 4 && order.paypal_invoice_id) {
+            try {
+                await PaypalService.cancelInvoice(order.paypal_invoice_id);
+                console.log(`[UpdateStatus] PayPal invoice cancelled: ${order.paypal_invoice_id}`);
+            } catch (paypalErr) {
+                console.error(`[UpdateStatus] Failed to cancel PayPal invoice:`, paypalErr);
+                // Optionally, you can throw here or just log and continue
+            }
         }
 
         // Update order status
