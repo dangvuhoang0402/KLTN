@@ -229,12 +229,27 @@ const checkOrderStatus = async (UID) => {
         let newStatus = order.Status;
         switch(paypalStatus.paypalStatus.toLowerCase()) {
             case 'paid':
-                newStatus = 2; // Change to your delivery status
+                newStatus = 2; // Delivering
                 break;
             case 'cancelled':
-                newStatus = 4; // Change to your cancelled status
+                newStatus = 4; // Cancelled
                 break;
             // Add more status mappings as needed
+        }
+
+        // If newStatus is 2 (delivered) and order.Status is not 2, update food quantities
+        if (newStatus === 2 && order.Status !== 2) {
+            await Promise.all(order.items.map(async (item) => {
+                const food = await FoodRepo.getFoodById(item.FoodId);
+                if (!food) {
+                    throw new CustomError(`Food with id ${item.FoodId} not found`, 404);
+                }
+                const newQuantity = food.Quantity - item.Quantity;
+                if (newQuantity < 0) {
+                    throw new CustomError(`Insufficient quantity for food: ${food.Name}`, 400);
+                }
+                await FoodRepo.updateFood(item.FoodId, { Quantity: newQuantity });
+            }));
         }
 
         // Update order status if changed
