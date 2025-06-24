@@ -64,10 +64,10 @@
                         <td style="padding:8px;"><%= item.FoodId.Name %></td>
                         <td style="padding:8px;text-align:right;"><%= item.Quantity %></td>
                         <td style="padding:8px;text-align:right;">
-                            <%= (item.Price !== undefined && item.Price !== null) ? item.Price.toLocaleString('vi-VN') : '0' %>
+                            <%= (item.FoodId && item.FoodId.Price !== undefined && item.FoodId.Price !== null) ? item.FoodId.Price.toLocaleString('vi-VN') : '0' %>
                         </td>
                         <td style="padding:8px;text-align:right;">
-                            <%= (item.Price && item.Quantity) ? (item.Price * item.Quantity).toLocaleString('vi-VN') : '0' %>
+                            <%= (item.FoodId.Price && item.Quantity) ? (item.FoodId.Price * item.Quantity).toLocaleString('vi-VN') : '0' %>
                         </td>
                     </tr>
                 <% }) %>
