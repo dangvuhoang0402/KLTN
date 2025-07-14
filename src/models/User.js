@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
     Role: {
-      type: Number,
+      type: String,
       required: true,
     },
     Token: {

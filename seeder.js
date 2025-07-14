@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 var bcrypt = require("bcrypt");
 
 const User = require('./src/models/User');
-const url = "mongodb+srv://dangvuhoang0402:WVioKGW7KkmG8PER@cluster0.9zuu4ha.mongodb.net/library_management"
+const url = "mongodb+srv://dangvuhoang0402:WVioKGW7KkmG8PER@cluster0.9zuu4ha.mongodb.net/food_canteen"
 // const connectMongoDB = (connectString)=>{
 //     return mongoose.connect(connectString,{
         
@@ -24,9 +24,7 @@ async function seedUsers() {
         const password = await bcrypt.hash("123456", 10);
 
         const users = [
-            { UserName: 'user1', Role: 'reader', Password: password },
-            { UserName: 'user2', Role: 'librarian', Password: password },
-            { UserName: 'user3', Role: 'owner', Password: password },
+            { UserName: 'user1', Role: 'owner', Password: password },
         ];
 
         await User.insertMany(users); 
