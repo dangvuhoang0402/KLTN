@@ -54,8 +54,8 @@ app.use("/auth",authRoute,handleResponse)
 app.use("/user",userRoute,handleResponse)
 app.use("/food",foodRoute,handleResponse)
 app.use("/order",orderRoute,handleResponse)
-app.use("/",verifyToken, authorized, homeRoute)
-app.use('/view', verifyToken, authorized, viewRoute, handleResponse);
+app.use("/",homeRoute)
+app.use('/view', viewRoute);
 
 app.use(handleError)
 
